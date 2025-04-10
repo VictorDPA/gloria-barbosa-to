@@ -1,4 +1,3 @@
-// src/lib/utils.ts
 import { format } from "date-fns";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -35,44 +34,68 @@ export function generatePdfFilename(anamnese: Anamnese): string {
   return `${fileName}_${format(new Date(), "yyyy_MM_dd")}`;
 }
 
-// Função para exportar para PDF
+// Função melhorada para exportar para PDF
 export async function exportToPdf(
   elementId: string,
-  anamnese: Anamnese
+  anamnese: Anamnese,
+  customFilename?: string
 ): Promise<void> {
   const element = document.getElementById(elementId);
   if (!element) {
-    throw new Error("Element not found");
+    throw new Error("Elemento não encontrado");
   }
 
-  const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true,
-    logging: false,
-  });
+  try {
+    // Configurações para melhorar a qualidade da captura
+    const canvas = await html2canvas(element, {
+      scale: 2, // Aumentar a escala para melhor qualidade
+      useCORS: true,
+      logging: false,
+      allowTaint: true,
+      removeContainer: true,
+      backgroundColor: "#ffffff",
+    });
 
-  const imgData = canvas.toDataURL("image/png");
-  const imgWidth = 210; // A4 width in mm
-  const pageHeight = 297; // A4 height in mm
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  let heightLeft = imgHeight;
+    const imgData = canvas.toDataURL("image/png");
 
-  const pdf = new jsPDF("p", "mm", "a4");
-  let position = 0;
+    // Dimensões de página A4 em mm
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
 
-  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-  heightLeft -= pageHeight;
+    const imgWidth = 210; // Largura A4
+    const pageHeight = 297; // Altura A4
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-  // Se o conteúdo for maior que uma página, adicionar páginas adicionais
-  while (heightLeft >= 0) {
-    position = heightLeft - imgHeight;
-    pdf.addPage();
+    // Quebrar em múltiplas páginas se necessário
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // Adiciona a primeira página
     pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
-  }
 
-  const fileName = generatePdfFilename(anamnese);
-  pdf.save(`${fileName}.pdf`);
+    // Adiciona páginas adicionais se necessário
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    // Usar o nome personalizado se fornecido, caso contrário usar o nome gerado automaticamente
+    const fileName = customFilename
+      ? `${customFilename}.pdf`
+      : `${generatePdfFilename(anamnese)}.pdf`;
+
+    pdf.save(fileName);
+    return Promise.resolve();
+  } catch (error) {
+    console.error("Erro na exportação para PDF:", error);
+    return Promise.reject(error);
+  }
 }
 
 // Verificar autenticação

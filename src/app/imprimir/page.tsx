@@ -1,19 +1,25 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { PrintView } from "@/components/print/PrintView";
 import { useAnamneseStore } from "@/lib/store";
 import { exportToPdf, generatePdfFilename } from "@/lib/utils";
 
 export default function PrintPage() {
   const router = useRouter();
-  // Uso de seletor individual
   const currentAnamnese = useAnamneseStore((state) => state.currentAnamnese);
   const printRef = useRef<HTMLDivElement>(null);
-  const [isExporting, setIsExporting] = React.useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [customFilename, setCustomFilename] = useState("");
+  const [showFilenameInput, setShowFilenameInput] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+
+  // Gerar o nome padrão sugerido do arquivo
+  const defaultFilename = generatePdfFilename(currentAnamnese);
 
   const handlePrint = () => {
     window.print();
@@ -21,14 +27,19 @@ export default function PrintPage() {
 
   const handleExportPdf = async () => {
     setIsExporting(true);
+    setExportError(null);
 
     try {
       if (printRef.current) {
-        await exportToPdf("print-content", currentAnamnese);
+        // Usar o nome personalizado se fornecido e válido
+        const filename = customFilename.trim()
+          ? customFilename.trim()
+          : undefined;
+        await exportToPdf("print-content", currentAnamnese, filename);
       }
     } catch (error) {
       console.error("Erro ao exportar para PDF:", error);
-      alert(
+      setExportError(
         "Ocorreu um erro ao exportar para PDF. Por favor, tente novamente."
       );
     } finally {
@@ -38,6 +49,14 @@ export default function PrintPage() {
 
   const handleBackToDashboard = () => {
     router.push("/dashboard");
+  };
+
+  const toggleFilenameInput = () => {
+    setShowFilenameInput(!showFilenameInput);
+    if (!showFilenameInput) {
+      // Inicializar com o nome sugerido quando mostrar o input
+      setCustomFilename(defaultFilename);
+    }
   };
 
   return (
@@ -61,13 +80,62 @@ export default function PrintPage() {
             </Button>
             <Button
               variant="primary"
-              onClick={handleExportPdf}
+              onClick={
+                showFilenameInput ? handleExportPdf : toggleFilenameInput
+              }
               disabled={isExporting}
             >
-              {isExporting ? "Exportando..." : "Exportar PDF"}
+              {isExporting
+                ? "Exportando..."
+                : showFilenameInput
+                ? "Confirmar Exportação"
+                : "Exportar PDF"}
             </Button>
           </div>
         </div>
+
+        {/* Opção de nome personalizado para o arquivo */}
+        {showFilenameInput && (
+          <div className="print:hidden mb-6 p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="flex-grow">
+                <Input
+                  id="filename-input"
+                  label="Nome do arquivo"
+                  value={customFilename}
+                  onChange={(e) => setCustomFilename(e.target.value)}
+                  placeholder="Digite o nome do arquivo (sem extensão)"
+                  helperText="O arquivo será salvo com extensão .pdf automaticamente"
+                  fullWidth
+                />
+              </div>
+              <div className="flex space-x-2 self-end">
+                <Button
+                  variant="outline"
+                  onClick={toggleFilenameInput}
+                  size="sm"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleExportPdf}
+                  size="sm"
+                  disabled={isExporting}
+                >
+                  {isExporting ? "Exportando..." : "Exportar"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mensagem de erro */}
+        {exportError && (
+          <div className="print:hidden mb-6 p-4 bg-red-50 text-red-800 rounded-md">
+            {exportError}
+          </div>
+        )}
 
         <div id="print-content" ref={printRef}>
           <PrintView data={currentAnamnese} />
@@ -82,10 +150,14 @@ export default function PrintPage() {
           </Button>
           <Button
             variant="primary"
-            onClick={handleExportPdf}
+            onClick={showFilenameInput ? handleExportPdf : toggleFilenameInput}
             disabled={isExporting}
           >
-            {isExporting ? "Exportando..." : "Exportar PDF"}
+            {isExporting
+              ? "Exportando..."
+              : showFilenameInput
+              ? "Confirmar Exportação"
+              : "Exportar PDF"}
           </Button>
         </div>
       </main>
