@@ -6,24 +6,24 @@ export function middleware(request: NextRequest) {
   const protectedRoutes = ["/dashboard", "/imprimir"];
   const path = request.nextUrl.pathname;
 
-  // Para demonstração, vamos simplificar e verificar apenas o cookie auth-state
-  if (protectedRoutes.some((route) => path.startsWith(route))) {
-    const directAuth = request.cookies.get("auth-state");
+  // Verificar autenticação para rotas protegidas
+  if (protectedRoutes.some((route) => path === route || path.startsWith(`${route}/`))) {
+    const authCookie = request.cookies.get("auth-state");
     
-    // Se não estiver autenticado, redireciona para login
-    if (!directAuth || directAuth.value !== "true") {
-      const loginUrl = new URL("/login", request.url);
-      return NextResponse.redirect(loginUrl);
+    // Se não estiver autenticado, redirecionar para login
+    if (!authCookie || authCookie.value !== "true") {
+      console.log(`Rota protegida ${path} - redirecionando para login`);
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
-  // Se já estiver autenticado e tentar acessar login, redireciona para dashboard
+  // Se já estiver autenticado e tentar acessar login
   if (path === "/login") {
-    const directAuth = request.cookies.get("auth-state");
+    const authCookie = request.cookies.get("auth-state");
     
-    if (directAuth && directAuth.value === "true") {
-      const dashboardUrl = new URL("/dashboard", request.url);
-      return NextResponse.redirect(dashboardUrl);
+    if (authCookie && authCookie.value === "true") {
+      console.log("Já autenticado - redirecionando para dashboard");
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
 
@@ -31,5 +31,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/imprimir/:path*", "/login"],
+  matcher: ["/dashboard", "/dashboard/:path*", "/imprimir", "/imprimir/:path*", "/login"],
 };
