@@ -12,6 +12,26 @@ import { ptBR } from "date-fns/locale";
 import { EvaluationSection } from "@/components/dashboard/FormSections/EvaluationSection";
 import { PatientSection } from "@/components/dashboard/FormSections/PatientSection";
 import { ReferralSection } from "@/components/dashboard/FormSections/ReferralSection";
+import { MedicalHistorySection } from "@/components/dashboard/FormSections/MedicalHistorySection";
+import { PregnancyHistorySection } from "@/components/dashboard/FormSections/PregnancyHistorySection";
+import { BabyDevelopmentSection } from "@/components/dashboard/FormSections/BabyDevelopmentSection";
+import { ChildDevelopmentSection } from "@/components/dashboard/FormSections/ChildDevelopmentSection";
+import { DailyRoutineSection } from "@/components/dashboard/FormSections/DailyRoutineSection";
+import { SocialInteractionSection } from "@/components/dashboard/FormSections/SocialInteractionSection";
+import { BehavioralManifestationsSection } from "@/components/dashboard/FormSections/BehavioralManifestationSection";
+import { EducationSection } from "@/components/dashboard/FormSections/EducationSection";
+import { RecognitionSkillsSection } from "@/components/dashboard/FormSections/RecognitionSkillsSection";
+import { FamilyDynamicsSection } from "@/components/dashboard/FormSections/FamilyDynamicsSection";
+import { ComplementaryExamsSection } from "@/components/dashboard/FormSections/ComplementaryExamsSection";
+import { DailyLivingActivitiesSection } from "@/components/dashboard/FormSections/DailyLivingActivitiesSection";
+import { MotorSkillsSection } from "@/components/dashboard/FormSections/MotorSkilsSection";
+import { SensoryPerceptionSection } from "@/components/dashboard/FormSections/SensoryPerceptionSection";
+import { ProprioceptionVestibularSection } from "@/components/dashboard/FormSections/ProprioceptionAndVestibularSection";
+import { TactilePerceptionSection } from "@/components/dashboard/FormSections/TactilePerceptionSection";
+import { TherapeuticDiagnosisSection } from "@/components/dashboard/FormSections/TherapeuticDiagnosisSection";
+import { PrognosisSection } from "@/components/dashboard/FormSections/PrognosisSection";
+import { OccupationalTherapyPlanSection } from "@/components/dashboard/FormSections/OccupationalTherapyPlanSection";
+import { AdditionalInformationSection } from "@/components/dashboard/FormSections/AdditionalInformationSection";
 
 // Tipos
 import { Anamnese } from "@/lib/types";
@@ -93,6 +113,18 @@ export default function Dashboard() {
     }
   };
 
+  const handleDiagnosisChange = (value: string) => {
+    updateAnamnese({
+      therapeuticOccupationalDiagnosis: value,
+    });
+  };
+
+  const handlePrognosisChange = (value: string) => {
+    updateAnamnese({
+      prognosis: value,
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Header />
@@ -129,11 +161,13 @@ export default function Dashboard() {
         )}
 
         <div className="space-y-6">
+          {/* Seção 1: Avaliação */}
           <EvaluationSection
             data={currentAnamnese.evaluation}
             onChange={(data) => handleSectionChange("evaluation", data)}
           />
 
+          {/* Seção 2: Identificação do Paciente */}
           <PatientSection
             data={currentAnamnese.patientIdentification}
             onChange={(data) =>
@@ -141,12 +175,141 @@ export default function Dashboard() {
             }
           />
 
+          {/* Seção 3: Encaminhamento */}
           <ReferralSection
             data={currentAnamnese.referral}
             onChange={(data) => handleSectionChange("referral", data)}
           />
 
-          {/* Adicione aqui as demais seções do formulário */}
+          {/* Seção 4: Histórico Médico */}
+          <MedicalHistorySection
+            data={currentAnamnese.medicalHistory}
+            onChange={(data) => handleSectionChange("medicalHistory", data)}
+          />
+
+          {/* Seção 5: Histórico da Gestação */}
+          <PregnancyHistorySection
+            data={currentAnamnese.pregnancyHistory}
+            onChange={(data) => handleSectionChange("pregnancyHistory", data)}
+          />
+
+          {/* Seção 6: Desenvolvimento do Bebê */}
+          <BabyDevelopmentSection
+            data={currentAnamnese.babyDevelopment}
+            onChange={(data) => handleSectionChange("babyDevelopment", data)}
+          />
+
+          {/* Seção 7: Desenvolvimento da Criança */}
+          <ChildDevelopmentSection
+            data={currentAnamnese.childDevelopment}
+            onChange={(data) => handleSectionChange("childDevelopment", data)}
+          />
+
+          {/* Seção 8: Rotina Diária */}
+          <DailyRoutineSection
+            data={currentAnamnese.dailyRoutine}
+            onChange={(data) => handleSectionChange("dailyRoutine", data)}
+          />
+
+          {/* Seção 9: Interação Social */}
+          <SocialInteractionSection
+            data={currentAnamnese.socialInteraction}
+            onChange={(data) => handleSectionChange("socialInteraction", data)}
+          />
+
+          {/* Seção 10: Manifestações Comportamentais */}
+          <BehavioralManifestationsSection
+            data={currentAnamnese.behavioralManifestations}
+            onChange={(data) =>
+              handleSectionChange("behavioralManifestations", data)
+            }
+          />
+
+          {/* Seção 11: Educação */}
+          <EducationSection
+            data={currentAnamnese.education}
+            onChange={(data) => handleSectionChange("education", data)}
+          />
+
+          {/* Seção 12: Habilidades de Reconhecimento */}
+          <RecognitionSkillsSection
+            data={currentAnamnese.recognitionSkills}
+            onChange={(data) => handleSectionChange("recognitionSkills", data)}
+          />
+
+          {/* Seção 13: Dinâmica Familiar */}
+          <FamilyDynamicsSection
+            data={currentAnamnese.familyDynamics}
+            onChange={(data) => handleSectionChange("familyDynamics", data)}
+          />
+
+          {/* Seção 14: Exames Complementares */}
+          <ComplementaryExamsSection
+            data={currentAnamnese.complementaryExams}
+            onChange={(data) => handleSectionChange("complementaryExams", data)}
+          />
+
+          {/* Seção 15: Atividades de Vida Diária */}
+          <DailyLivingActivitiesSection
+            data={currentAnamnese.dailyLivingActivities}
+            onChange={(data) =>
+              handleSectionChange("dailyLivingActivities", data)
+            }
+          />
+
+          {/* Seção 16: Habilidades Motoras */}
+          <MotorSkillsSection
+            data={currentAnamnese.motorSkills}
+            onChange={(data) => handleSectionChange("motorSkills", data)}
+          />
+
+          {/* Seção 17: Percepção Sensorial */}
+          <SensoryPerceptionSection
+            data={currentAnamnese.sensoryPerception}
+            onChange={(data) => handleSectionChange("sensoryPerception", data)}
+          />
+
+          {/* Seção 18: Propriocepção e Sistema Vestibular */}
+          <ProprioceptionVestibularSection
+            data={currentAnamnese.proprioceptionAndVestibular}
+            onChange={(data) =>
+              handleSectionChange("proprioceptionAndVestibular", data)
+            }
+          />
+
+          {/* Seção 19: Percepção Tátil */}
+          <TactilePerceptionSection
+            data={currentAnamnese.tactilePerception}
+            onChange={(data) => handleSectionChange("tactilePerception", data)}
+          />
+
+          {/* Seção 20: Diagnóstico Terapêutico Ocupacional */}
+          <TherapeuticDiagnosisSection
+            data={currentAnamnese.therapeuticOccupationalDiagnosis}
+            onChange={handleDiagnosisChange}
+          />
+
+          {/* Seção 21: Prognóstico */}
+          <PrognosisSection
+            data={currentAnamnese.prognosis}
+            onChange={handlePrognosisChange}
+          />
+
+          {/* Seção 22: Plano Terapêutico Ocupacional */}
+          <OccupationalTherapyPlanSection
+            data={currentAnamnese.occupationalTherapyPlan}
+            onChange={(data) =>
+              handleSectionChange("occupationalTherapyPlan", data)
+            }
+          />
+
+          {/* Seção 23: Informações Adicionais */}
+          <AdditionalInformationSection
+            data={currentAnamnese.additionalInformation}
+            onChange={(data) =>
+              handleSectionChange("additionalInformation", data)
+            }
+          />
         </div>
 
         <div className="mt-8 flex justify-end space-x-2">
