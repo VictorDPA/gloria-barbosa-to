@@ -8,7 +8,7 @@ const nextConfig = {
     NEXT_PUBLIC_AUTH_PASSWORD: process.env.NEXT_PUBLIC_AUTH_PASSWORD || "admin", // Senha padrão apenas para desenvolvimento
   },
   // Configuração para permitir importações absoluta a partir do diretório src
-  webpack(config) {
+  webpack(config: unknown) {
     return config;
   },
 };
