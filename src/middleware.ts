@@ -6,10 +6,8 @@ export function middleware(request: NextRequest) {
   const protectedRoutes = ["/dashboard", "/imprimir"];
   const path = request.nextUrl.pathname;
 
-  // Em ambiente de desenvolvimento, permitir acesso
-  if (process.env.NODE_ENV === "development") {
-    return NextResponse.next();
-  }
+  // Remover a verificação de ambiente de desenvolvimento
+  // para garantir que a autenticação funcione em todos os ambientes
 
   // Se a rota for protegida, verificar autenticação
   if (protectedRoutes.some((route) => path.startsWith(route))) {

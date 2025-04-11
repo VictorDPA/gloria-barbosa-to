@@ -14,17 +14,16 @@ export const LoginForm: React.FC = () => {
   const router = useRouter();
   const setAuthenticated = useAnamneseStore((state) => state.setAuthenticated);
 
-  // Define a senha diretamente no código para garantir funcionamento
-  // EM PRODUÇÃO: substitua por uma variável de ambiente ou um sistema de autenticação seguro
-  const SENHA_CORRETA = "admin";
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      if (password === SENHA_CORRETA) {
+      // Usar a variável de ambiente em vez de valor hardcoded
+      const correctPassword = process.env.NEXT_PUBLIC_AUTH_PASSWORD;
+
+      if (password === correctPassword) {
         // Define o estado de autenticação
         setAuthenticated(true);
 
@@ -78,7 +77,8 @@ export const LoginForm: React.FC = () => {
         <div className="mt-4 p-3 bg-gray-100 rounded text-sm">
           <p className="text-gray-700">Ambiente de desenvolvimento</p>
           <p className="text-gray-700">
-            Senha: <code>admin</code>
+            Senha:{" "}
+            <code>{process.env.NEXT_PUBLIC_AUTH_PASSWORD || "admin"}</code>
           </p>
         </div>
       )}
