@@ -11,7 +11,6 @@ export const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const setAuthenticated = useAnamneseStore((state) => state.setAuthenticated);
 
   // TEMPORÁRIO: Senha fixa para demonstração ao cliente
