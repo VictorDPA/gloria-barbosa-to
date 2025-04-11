@@ -20,7 +20,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
   };
 
   const handleYesNoDetailChange = (key: keyof Education) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };

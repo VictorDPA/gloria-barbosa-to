@@ -13,7 +13,7 @@ export const ChildDevelopmentSection: React.FC<
   ChildDevelopmentSectionProps
 > = ({ data, onChange }) => {
   const handleYesNoDetailChange = (key: keyof ChildDevelopment) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };

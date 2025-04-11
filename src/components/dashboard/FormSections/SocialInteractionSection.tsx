@@ -14,30 +14,28 @@ export const SocialInteractionSection: React.FC<
   SocialInteractionSectionProps
 > = ({ data, onChange }) => {
   const handleYesNoDetailChange = (key: keyof SocialInteraction) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };
 
   const handleChildProfileChange = (key: keyof ChildProfile) => {
-    if (key === "details") {
-      return (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      if (key === "details" && e.target instanceof HTMLTextAreaElement) {
         onChange({
           childProfile: {
             ...data.childProfile,
             details: e.target.value,
           },
         });
-      };
-    }
-
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange({
-        childProfile: {
-          ...data.childProfile,
-          [key]: e.target.checked,
-        },
-      });
+      } else if (e.target instanceof HTMLInputElement) {
+        onChange({
+          childProfile: {
+            ...data.childProfile,
+            [key]: e.target.checked,
+          },
+        });
+      }
     };
   };
 

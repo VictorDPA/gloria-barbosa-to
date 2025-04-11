@@ -21,22 +21,25 @@ export const FamilyDynamicsSection: React.FC<FamilyDynamicsSectionProps> = ({
   };
 
   const handleYesNoDetailChange = (key: keyof FamilyDynamics) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };
 
   const handleSiblingsChange = (field: string) => {
     if (field === "yes" || field === "details") {
-      return (value: any) => {
+      return (value: unknown) => {
         onChange({
           hasSiblings: {
             ...data.hasSiblings,
-            [field]: typeof value === "boolean" ? value : value.yes,
+            [field]:
+              typeof value === "boolean"
+                ? value
+                : (value as { yes: boolean }).yes,
             details:
               typeof value === "boolean"
                 ? data.hasSiblings.details
-                : value.details,
+                : (value as { details: string }).details,
           },
         });
       };
@@ -68,7 +71,15 @@ export const FamilyDynamicsSection: React.FC<FamilyDynamicsSectionProps> = ({
               yes: data.hasSiblings.yes,
               details: data.hasSiblings.details,
             }}
-            onChange={handleSiblingsChange("details")}
+            onChange={(value) =>
+              onChange({
+                hasSiblings: {
+                  ...data.hasSiblings,
+                  details: value.details,
+                  yes: value.yes,
+                },
+              })
+            }
           />
 
           {data.hasSiblings.yes && (

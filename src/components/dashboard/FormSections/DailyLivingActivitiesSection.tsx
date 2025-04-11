@@ -23,7 +23,7 @@ export const DailyLivingActivitiesSection: React.FC<
   DailyLivingActivitiesSectionProps
 > = ({ data, onChange }) => {
   // Hygiene section handlers
-  const handleHygieneChange = (key: keyof Hygiene, value: any) => {
+  const handleHygieneChange = (key: keyof Hygiene, value: unknown) => {
     onChange({
       hygiene: {
         ...data.hygiene,
@@ -55,7 +55,7 @@ export const DailyLivingActivitiesSection: React.FC<
   };
 
   // Bathing section handlers
-  const handleBathingChange = (key: keyof Bathing, value: any) => {
+  const handleBathingChange = (key: keyof Bathing, value: unknown) => {
     onChange({
       bathing: {
         ...data.bathing,
@@ -65,7 +65,7 @@ export const DailyLivingActivitiesSection: React.FC<
   };
 
   const handleBathingYesNoDetail = (key: keyof Bathing) => {
-    return (value: any) => {
+    return (value: unknown) => {
       handleBathingChange(key, value);
     };
   };
@@ -75,7 +75,7 @@ export const DailyLivingActivitiesSection: React.FC<
   };
 
   // Dressing section handlers
-  const handleDressingChange = (key: keyof Dressing, value: any) => {
+  const handleDressingChange = (key: keyof Dressing, value: unknown) => {
     onChange({
       dressing: {
         ...data.dressing,
@@ -85,7 +85,7 @@ export const DailyLivingActivitiesSection: React.FC<
   };
 
   const handleDressingYesNoDetail = (key: keyof Dressing) => {
-    return (value: any) => {
+    return (value: unknown) => {
       handleDressingChange(key, value);
     };
   };
@@ -95,7 +95,7 @@ export const DailyLivingActivitiesSection: React.FC<
   };
 
   // Feeding section handlers
-  const handleFeedingChange = (key: keyof Feeding, value: any) => {
+  const handleFeedingChange = (key: keyof Feeding, value: unknown) => {
     onChange({
       feeding: {
         ...data.feeding,
@@ -105,7 +105,7 @@ export const DailyLivingActivitiesSection: React.FC<
   };
 
   const handleFeedingYesNoDetail = (key: keyof Feeding) => {
-    return (value: any) => {
+    return (value: unknown) => {
       handleFeedingChange(key, value);
     };
   };

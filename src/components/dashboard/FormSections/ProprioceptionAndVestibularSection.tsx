@@ -12,7 +12,7 @@ export const ProprioceptionVestibularSection: React.FC<
   ProprioceptionVestibularSectionProps
 > = ({ data, onChange }) => {
   const handleYesNoDetailChange = (key: keyof ProprioceptionAndVestibular) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };

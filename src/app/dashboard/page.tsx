@@ -71,7 +71,10 @@ export default function Dashboard() {
   ) => {
     updateAnamnese({
       [section]: {
-        ...currentAnamnese[section],
+        ...(typeof currentAnamnese[section] === "object" &&
+        currentAnamnese[section] !== null
+          ? currentAnamnese[section]
+          : {}),
         ...data,
       },
     });

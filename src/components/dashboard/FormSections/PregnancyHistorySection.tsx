@@ -21,7 +21,7 @@ export const PregnancyHistorySection: React.FC<
   };
 
   const handleYesNoDetailChange = (key: keyof PregnancyHistory) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };

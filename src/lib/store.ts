@@ -319,10 +319,10 @@ export const useAnamneseStore = create<AnamneseState>()(
         getItem: (name) => {
           const str = localStorage.getItem(name);
           if (!str) return null;
-          return str;
+          return JSON.parse(str) as { state: AnamneseState; version: number };
         },
         setItem: (name, value) => {
-          localStorage.setItem(name, value);
+          localStorage.setItem(name, JSON.stringify(value));
         },
         removeItem: (name) => {
           localStorage.removeItem(name);

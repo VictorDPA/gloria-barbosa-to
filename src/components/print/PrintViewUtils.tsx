@@ -116,7 +116,10 @@ export const renderSection = (
 
 // Função para renderizar listas de forma mais compacta
 export const renderList = (
-  items: Array<{ label: string; value: any }>,
+  items: Array<{
+    label: string;
+    value: string | number | boolean | React.ReactNode;
+  }>,
   columns: number = 1
 ) => {
   // Filtrar apenas itens com valores válidos
@@ -161,7 +164,7 @@ export const renderList = (
 // Função para renderizar tabelas de forma mais compacta para impressão
 export const renderTable = (
   headers: string[],
-  rows: any[][],
+  rows: (string | number | boolean | React.ReactNode)[][],
   widths?: string[]
 ) => {
   return (

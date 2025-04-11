@@ -12,7 +12,7 @@ export const TactilePerceptionSection: React.FC<
   TactilePerceptionSectionProps
 > = ({ data, onChange }) => {
   const handleYesNoDetailChange = (key: keyof TactilePerception) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };

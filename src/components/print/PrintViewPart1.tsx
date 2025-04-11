@@ -6,7 +6,6 @@ import {
   renderField,
   renderSection,
   renderYesNoDetail,
-  renderList,
 } from "./PrintViewUtils";
 
 type PrintViewPart1Props = {

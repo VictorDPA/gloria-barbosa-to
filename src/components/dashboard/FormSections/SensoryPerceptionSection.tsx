@@ -12,7 +12,7 @@ export const SensoryPerceptionSection: React.FC<
   SensoryPerceptionSectionProps
 > = ({ data, onChange }) => {
   const handleYesNoDetailChange = (key: keyof SensoryPerception) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };

@@ -14,7 +14,7 @@ export const BehavioralManifestationsSection: React.FC<
   BehavioralManifestationsSectionProps
 > = ({ data, onChange }) => {
   const handleYesNoDetailChange = (key: keyof BehavioralManifestations) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };

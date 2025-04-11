@@ -12,7 +12,7 @@ export const RecognitionSkillsSection: React.FC<
   RecognitionSkillsSectionProps
 > = ({ data, onChange }) => {
   const handleYesNoDetailChange = (key: keyof RecognitionSkills) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };

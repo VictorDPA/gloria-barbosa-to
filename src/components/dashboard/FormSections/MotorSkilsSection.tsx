@@ -13,7 +13,7 @@ export const MotorSkillsSection: React.FC<MotorSkillsSectionProps> = ({
   onChange,
 }) => {
   const handleYesNoDetailChange = (key: keyof MotorSkills) => {
-    return (value: any) => {
+    return (value: unknown) => {
       onChange({ [key]: value });
     };
   };
