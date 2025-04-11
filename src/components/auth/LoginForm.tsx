@@ -4,40 +4,36 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { useAnamneseStore } from "@/lib/store";
 
 export const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const setAuthenticated = useAnamneseStore((state) => state.setAuthenticated);
 
   // TEMPORÁRIO: Senha fixa para demonstração ao cliente
   // AVISO: Mude para variáveis de ambiente em produção!
   const DEMO_PASSWORD = "admin";
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
       if (password === DEMO_PASSWORD) {
-        // Define o estado de autenticação
-        setAuthenticated(true);
-
         // Armazena diretamente no localStorage
         localStorage.setItem("auth-state", "true");
 
-        // Redireciona usando window.location para garantir o recarregamento
+        // Redirecionamento direto, sem usar router
+        console.log("Login bem-sucedido, redirecionando...");
         window.location.href = "/dashboard";
       } else {
         setError("Senha incorreta");
+        setLoading(false);
       }
     } catch (err) {
+      console.error("Erro no login:", err);
       setError("Erro ao fazer login. Tente novamente.");
-      console.error(err);
-    } finally {
       setLoading(false);
     }
   };
