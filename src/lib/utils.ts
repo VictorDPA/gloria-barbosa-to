@@ -13,7 +13,12 @@ export function cn(...inputs: ClassValue[]) {
 // Função para formatar a data
 export function formatDate(date: string | Date): string {
   if (!date) return "";
-  return format(new Date(date), "dd/MM/yyyy");
+  try {
+    return format(new Date(date), "dd/MM/yyyy");
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "";
+  }
 }
 
 // Função para gerar o nome do arquivo PDF
@@ -31,10 +36,14 @@ export function generatePdfFilename(anamnese: Anamnese): string {
     fileName = nameParts[0];
   }
 
-  return `${fileName}_${format(new Date(), "yyyy_MM_dd")}`;
+  // Remover caracteres especiais que podem causar problemas em nomes de arquivo
+  fileName = fileName.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  fileName = fileName.replace(/[^\w\s-]/gi, "");
+
+  return `Anamnese_${fileName}_${format(new Date(), "yyyy_MM_dd")}`;
 }
 
-// Função corrigida para exportar para PDF usando jsPDF
+// Função melhorada para exportar para PDF
 export async function exportToPdf(
   elementId: string,
   anamnese: Anamnese,
@@ -47,7 +56,13 @@ export async function exportToPdf(
       throw new Error("Elemento não encontrado");
     }
 
-    // Configurar o documento PDF
+    // Aplicar estilos de impressão ao elemento temporariamente
+    const originalDisplay = window.getComputedStyle(element).display;
+    element.style.display = "block";
+    element.style.width = "210mm"; // Largura de uma página A4
+    document.body.classList.add("printing-pdf");
+
+    // Preparar o documento PDF
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "mm",
@@ -55,14 +70,19 @@ export async function exportToPdf(
       compress: true,
     });
 
-    // Dimensões de página A4 em mm
+    // Dimensões e margens da página A4
     const pageWidth = 210;
     const pageHeight = 297;
-    const margin = 15; // margem em mm
-    const contentWidth = pageWidth - margin * 2;
+    const margin = 15;
 
-    // Configurar a captura de HTML para PDF
-    const options = {
+    // Altura máxima de conteúdo por página
+    const maxContentHeight = pageHeight - margin * 2;
+
+    // Obter a altura total do conteúdo
+    const contentSections = element.querySelectorAll(".print-section");
+
+    // Configurações para html2canvas
+    const canvasOptions = {
       scale: 2, // Aumentar qualidade
       useCORS: true,
       allowTaint: true,
@@ -70,50 +90,63 @@ export async function exportToPdf(
       logging: false,
     };
 
-    // Usar html2canvas para renderizar o elemento
-    const canvas = await html2canvas(element, options);
+    // Variável para controlar se já adicionamos uma página
+    let isFirstPage = true;
 
-    // Converter o canvas para imagem
-    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    // Processar cada seção separadamente para evitar problemas de memória
+    for (let i = 0; i < contentSections.length; i++) {
+      const section = contentSections[i] as HTMLElement;
 
-    // Obter dimensões proporcionais
-    const imgWidth = pageWidth - margin * 2;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Pular seções vazias
+      if (!section.offsetHeight) continue;
 
-    // Calcular número de páginas
-    const pageCount = Math.ceil(imgHeight / (pageHeight - margin * 2));
-
-    // Adicionar páginas com recortes apropriados da imagem
-    for (let i = 0; i < pageCount; i++) {
-      if (i > 0) {
+      // Adicionar nova página se não for a primeira seção
+      if (!isFirstPage) {
         pdf.addPage();
+      } else {
+        isFirstPage = false;
       }
 
-      // Calcular posição do recorte
-      const srcY = i * (canvas.height / pageCount);
-      const srcHeight = canvas.height / pageCount;
+      try {
+        // Capturar a seção atual
+        const canvas = await html2canvas(section, canvasOptions);
 
-      // Adicionar imagem para esta página
-      pdf.addImage(
-        imgData,
-        "JPEG",
-        margin,
-        margin,
-        imgWidth,
-        imgHeight / pageCount,
-        `page-${i}`,
-        "MEDIUM",
-        0,
-        -srcY * (imgWidth / canvas.width)
-      );
+        // Converter o canvas para imagem
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+
+        // Calcular dimensões proporcionais para caber na página
+        const imgWidth = pageWidth - margin * 2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        // Adicionar a imagem ao PDF
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          margin,
+          margin,
+          imgWidth,
+          imgHeight,
+          undefined,
+          "MEDIUM"
+        );
+      } catch (sectionError) {
+        console.error(`Erro ao processar seção ${i}:`, sectionError);
+        // Continuar com a próxima seção
+      }
     }
 
-    // Usar o nome personalizado se fornecido, caso contrário usar o nome gerado automaticamente
+    // Restaurar os estilos originais
+    element.style.display = originalDisplay;
+    document.body.classList.remove("printing-pdf");
+
+    // Gerar o nome do arquivo
     const fileName = customFilename
       ? `${customFilename}.pdf`
       : `${generatePdfFilename(anamnese)}.pdf`;
 
+    // Salvar o PDF
     pdf.save(fileName);
+
     return Promise.resolve();
   } catch (error) {
     console.error("Erro na exportação para PDF:", error);

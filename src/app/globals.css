@@ -17,8 +17,8 @@ body {
   @page {
     size: A4 portrait;
     margin: 15mm;
-    orphans: 2;
-    widows: 2;
+    orphans: 4;
+    widows: 4;
   }
 
   html,
@@ -29,7 +29,7 @@ body {
     padding: 0;
     background: white !important;
     color: black !important;
-    font-size: 12pt;
+    font-size: 10pt;
     font-family: Arial, sans-serif;
   }
 
@@ -50,7 +50,7 @@ body {
   .print-section {
     page-break-inside: avoid;
     break-inside: avoid;
-    margin-bottom: 20pt !important;
+    margin-bottom: 15pt !important;
   }
 
   h1,
@@ -64,13 +64,15 @@ body {
   }
 
   h1 {
-    font-size: 18pt;
+    font-size: 16pt;
+    text-align: center;
   }
 
   h2 {
-    font-size: 14pt;
-    border-bottom: 1pt solid #000 !important;
+    font-size: 13pt;
+    border-bottom: 0.5pt solid #000 !important;
     padding-bottom: 2pt;
+    margin-top: 15pt;
   }
 
   p,
@@ -78,13 +80,15 @@ body {
   ul,
   ol,
   dl {
-    orphans: 2;
-    widows: 2;
+    orphans: 3;
+    widows: 3;
   }
 
   .page-break {
     page-break-before: always;
     break-before: page;
+    height: 0;
+    display: block;
   }
 
   .no-break {
@@ -104,19 +108,19 @@ body {
   span,
   div {
     font-size: 10pt;
-    line-height: 1.4;
+    line-height: 1.3;
   }
 
   /* Tamanho específico para o cabeçalho principal */
   .header-title {
-    font-size: 18pt;
+    font-size: 16pt;
     font-weight: bold;
     text-align: center;
     margin-bottom: 5pt;
   }
 
   .header-subtitle {
-    font-size: 14pt;
+    font-size: 13pt;
     text-align: center;
     margin-bottom: 3pt;
   }
@@ -128,30 +132,109 @@ body {
   }
 
   /* Espaçamento entre seções */
-  .print-section + .print-section {
-    margin-top: 12pt;
+  .print-section {
+    margin-top: 5pt !important;
+    margin-bottom: 10pt !important;
   }
 
   /* Estilos para campos e valores */
-  .field-label {
+  .field-label,
+  .font-semibold {
     font-weight: bold;
+  }
+
+  /* Garantir que cada seção principal comece em nova página */
+  .evaluation-section {
+    page-break-before: auto;
+  }
+
+  .patient-identification-section {
+    page-break-before: auto;
+  }
+
+  .referral-section,
+  .medical-history-section {
+    page-break-before: auto;
+  }
+
+  .pregnancy-history-section,
+  .baby-development-section {
+    page-break-before: auto;
+  }
+
+  .daily-routine-section,
+  .social-interaction-section,
+  .behavioral-manifestations-section {
+    page-break-before: auto;
+  }
+
+  .education-section,
+  .recognition-skills-section,
+  .family-dynamics-section {
+    page-break-before: auto;
+  }
+
+  .daily-living-activities-section,
+  .hygiene-section,
+  .bathing-section {
+    page-break-before: auto;
+  }
+
+  .dressing-section,
+  .feeding-section,
+  .motor-skills-section {
+    page-break-before: auto;
+  }
+
+  .sensory-perception-section,
+  .proprioception-vestibular-section,
+  .tactile-perception-section {
+    page-break-before: auto;
+  }
+
+  .therapeutic-diagnosis-section,
+  .prognosis-section,
+  .therapy-plan-section {
+    page-break-before: auto;
   }
 
   /* Otimizar uso de espaço */
   .pl-4 {
-    padding-left: 10pt !important;
+    padding-left: 8pt !important;
   }
 
   .mb-2 {
-    margin-bottom: 4pt !important;
+    margin-bottom: 3pt !important;
   }
 
   .mb-4 {
-    margin-bottom: 8pt !important;
+    margin-bottom: 6pt !important;
   }
 
   .mb-6 {
+    margin-bottom: 10pt !important;
+  }
+
+  .mb-8 {
     margin-bottom: 12pt !important;
+  }
+
+  .mt-4 {
+    margin-top: 8pt !important;
+  }
+
+  /* Ajustes para melhorar espaçamento */
+  h2 + div {
+    margin-top: 8pt !important;
+  }
+
+  .print-content {
+    font-size: 10pt;
+  }
+
+  /* Tamanho de texto em detalhes */
+  .text-sm {
+    font-size: 9pt !important;
   }
 
   /* Estilos para assinatura */

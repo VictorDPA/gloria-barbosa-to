@@ -68,33 +68,37 @@ export const renderYesNoDependency = (item: YesNoDependency | undefined) => {
 // Função para renderizar um campo do formulário
 export const renderField = (
   label: string,
-  value: string | number | boolean | null | undefined
+  value: string | number | boolean | React.ReactNode | null | undefined
 ) => {
   return (
     <div className="mb-2">
       <span className="font-semibold">{label}:</span>{" "}
-      <span>{value ? value.toString() : "-"}</span>
+      <span>
+        {value ? (typeof value === "boolean" ? value.toString() : value) : "-"}
+      </span>
     </div>
   );
 };
 
-// Função para renderizar uma seção do formulário
+// Função para renderizar uma seção do formulário com melhor controle de espaço
 export const renderSection = (
   title: string,
   children: React.ReactNode,
   sectionClass?: string
 ) => {
   // Converta o título para uma classe CSS
-  const defaultClass =
-    title
-      .toLowerCase()
-      .replace(/[^\w\s]/gi, "")
-      .replace(/\s+/g, "-") + "-section";
+  const titleSlug = title
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s-]/gi, "")
+    .replace(/\s+/g, "-");
 
+  const defaultClass = `${titleSlug}-section`;
   const className = sectionClass || defaultClass;
 
   return (
-    <div className={`mb-6 no-break print-section ${className}`}>
+    <div className={`mb-6 print-section ${className}`}>
       <h2 className="text-xl font-bold border-b border-slate-900 pb-1 mb-3">
         {title}
       </h2>
