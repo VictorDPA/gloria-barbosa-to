@@ -11,20 +11,20 @@ export const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [envStatus, setEnvStatus] = useState<string>("Verificando...");
   const router = useRouter();
   const setAuthenticated = useAnamneseStore((state) => state.setAuthenticated);
+  const isAuthenticated = useAnamneseStore((state) => state.isAuthenticated);
 
+  // Efeito para redirecionar se já estiver autenticado
   useEffect(() => {
-    // Verifica se a variável de ambiente está disponível (sem mostrar o valor real)
-    const envVarExists =
-      typeof process.env.NEXT_PUBLIC_AUTH_PASSWORD === "string";
-    setEnvStatus(
-      envVarExists
-        ? "✅ Variável de ambiente detectada"
-        : "❌ Variável de ambiente não encontrada"
-    );
-  }, []);
+    // Verifica se já está autenticado pelo Zustand ou localStorage
+    const isAuthFromStorage = localStorage.getItem("auth-state") === "true";
+
+    if (isAuthenticated || isAuthFromStorage) {
+      console.log("Usuário já autenticado, redirecionando...");
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,18 +32,24 @@ export const LoginForm: React.FC = () => {
     setError("");
 
     try {
-      // Verificação de fallback para garantir que funcione
+      // Tentamos primeiro a variável de ambiente, depois o fallback
       const correctPassword = process.env.NEXT_PUBLIC_AUTH_PASSWORD || "admin";
 
       if (password === correctPassword) {
+        console.log("Senha correta, autenticando...");
+
         // Define o estado de autenticação
         setAuthenticated(true);
 
         // Armazena diretamente no localStorage para garantir
         localStorage.setItem("auth-state", "true");
 
-        // Navega para o dashboard
-        router.push("/dashboard");
+        // Pequena pausa para garantir que o estado foi atualizado
+        setTimeout(() => {
+          console.log("Redirecionando para o dashboard...");
+          // Força a navegação usando window.location em vez do router
+          window.location.href = "/dashboard";
+        }, 500);
       } else {
         setError("Senha incorreta");
       }
@@ -85,18 +91,14 @@ export const LoginForm: React.FC = () => {
         </Button>
       </form>
 
-      <div className="mt-4 p-3 bg-gray-100 rounded text-sm">
-        <p className="text-gray-700">Status: {envStatus}</p>
-        <p className="text-gray-700">
-          Ambiente: {process.env.NODE_ENV || "não detectado"}
-        </p>
-        {process.env.NODE_ENV === "development" && (
+      {process.env.NODE_ENV === "development" && (
+        <div className="mt-4 p-3 bg-gray-100 rounded text-sm">
+          <p className="text-gray-700">Ambiente de desenvolvimento</p>
           <p className="text-gray-700">
-            Dica para desenvolvimento: use admin se não tiver configurado a
-            variável.
+            Senha: <code>admin</code>
           </p>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

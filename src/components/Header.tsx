@@ -2,13 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useAnamneseStore } from "@/lib/store";
 
 export const Header: React.FC = () => {
   const pathname = usePathname();
-  const router = useRouter();
 
   // Use o hook do Zustand com uma função seletora que tem uma referência estável
   const setAuthenticated = useAnamneseStore((state) => state.setAuthenticated);
@@ -21,16 +20,28 @@ export const Header: React.FC = () => {
   useEffect(() => {
     // Verificar tanto o state do Zustand quanto o localStorage
     const authFromLocalStorage = localStorage.getItem("auth-state") === "true";
-    setIsAuth(isAuthenticated || authFromLocalStorage);
+    const authState = isAuthenticated || authFromLocalStorage;
+
+    console.log("Estado de autenticação no Header:", {
+      zustandAuth: isAuthenticated,
+      localStorageAuth: authFromLocalStorage,
+      finalAuthState: authState,
+    });
+
+    setIsAuth(authState);
   }, [isAuthenticated]);
 
   const handleLogout = () => {
+    console.log("Realizando logout");
     // Limpar ambos os métodos de autenticação
     setAuthenticated(false);
     localStorage.removeItem("auth-state");
-    router.push("/");
+
+    // Forçar redirecionamento usando window.location
+    window.location.href = "/";
   };
 
+  // Não renderizar o header em rotas específicas
   if (pathname === "/login" || pathname === "/") {
     return null;
   }

@@ -292,11 +292,22 @@ type AnamneseState = {
   setAuthenticated: (value: boolean) => void;
 };
 
+// Helper para verificar se está no lado do cliente
+const isBrowser = typeof window !== "undefined";
+
+// Verifica no localStorage se já está autenticado (para inicialização do estado)
+const getInitialAuthState = () => {
+  if (isBrowser) {
+    return localStorage.getItem("auth-state") === "true";
+  }
+  return false;
+};
+
 export const useAnamneseStore = create<AnamneseState>()(
   persist(
     (set) => ({
       currentAnamnese: createEmptyAnamnese(),
-      isAuthenticated: false,
+      isAuthenticated: getInitialAuthState(), // Usa o valor do localStorage
       updateAnamnese: (data) =>
         set((state) => ({
           currentAnamnese: { ...state.currentAnamnese, ...data },
@@ -307,6 +318,10 @@ export const useAnamneseStore = create<AnamneseState>()(
         })),
       setAuthenticated: (value) => {
         console.log("Atualizando estado de autenticação:", value);
+        // Atualiza também o localStorage diretamente
+        if (isBrowser) {
+          localStorage.setItem("auth-state", String(value));
+        }
         set(() => ({
           isAuthenticated: value,
         }));
@@ -317,15 +332,29 @@ export const useAnamneseStore = create<AnamneseState>()(
       // Garantir que o armazenamento seja implementado
       storage: {
         getItem: (name) => {
+          if (!isBrowser) return null;
           const str = localStorage.getItem(name);
           if (!str) return null;
-          return JSON.parse(str) as { state: AnamneseState; version: number };
+          try {
+            return JSON.parse(str) as { state: AnamneseState; version: number };
+          } catch (error) {
+            console.error("Erro ao fazer parse do localStorage:", error);
+            return null;
+          }
         },
         setItem: (name, value) => {
-          localStorage.setItem(name, JSON.stringify(value));
+          if (isBrowser) {
+            try {
+              localStorage.setItem(name, JSON.stringify(value));
+            } catch (error) {
+              console.error("Erro ao salvar no localStorage:", error);
+            }
+          }
         },
         removeItem: (name) => {
-          localStorage.removeItem(name);
+          if (isBrowser) {
+            localStorage.removeItem(name);
+          }
         },
       },
     }
