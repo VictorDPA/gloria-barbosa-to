@@ -4,15 +4,50 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
-export const LoginForm: React.FC = () => {
+// Props para receber o router do componente pai
+interface LoginFormProps {
+  router: AppRouterInstance;
+}
+
+export const LoginForm: React.FC<LoginFormProps> = ({ router }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // TEMPORÁRIO: Senha fixa para demonstração ao cliente
-  // AVISO: Mude para variáveis de ambiente em produção!
+  // SENHA FIXA PARA DEMONSTRAÇÃO
   const DEMO_PASSWORD = "admin";
+
+  // Função para definir um cookie
+  const setCookie = (name: string, value: string, days: number) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    console.log(`Cookie ${name} definido`);
+  };
+
+  // Várias abordagens de redirecionamento para garantir que uma delas funcione
+  const navigateToDashboard = () => {
+    try {
+      console.log("Tentando redirecionamento usando Next.js router");
+      router.push("/dashboard");
+      
+      // Como backup, também tenta o redirecionamento direto após um pequeno atraso
+      setTimeout(() => {
+        console.log("Tentando redirecionamento direto via window.location.href");
+        window.location.href = "/dashboard";
+      }, 100);
+    } catch (err) {
+      console.error("Erro durante redirecionamento com router:", err);
+      // Se o router falhar, usa redirecionamento direto
+      window.location.href = "/dashboard";
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,14 +55,24 @@ export const LoginForm: React.FC = () => {
     setError("");
 
     try {
+      console.log("Tentando login com senha:", password);
+      
       if (password === DEMO_PASSWORD) {
-        // Armazena diretamente no localStorage
+        console.log("Senha correta, autenticando...");
+        
+        // Armazenar em múltiplos lugares para garantir
         localStorage.setItem("auth-state", "true");
-
-        // Redirecionamento direto, sem usar router
-        console.log("Login bem-sucedido, redirecionando...");
-        window.location.href = "/dashboard";
+        sessionStorage.setItem("auth-state", "true");
+        setCookie("auth-state", "true", 7);
+        
+        console.log("Estado de autenticação salvo, redirecionando...");
+        
+        // Aguardar um pouco para garantir que o estado foi salvo
+        setTimeout(() => {
+          navigateToDashboard();
+        }, 200);
       } else {
+        console.log("Senha incorreta");
         setError("Senha incorreta");
         setLoading(false);
       }
@@ -66,6 +111,17 @@ export const LoginForm: React.FC = () => {
         >
           {loading ? "Carregando..." : "Entrar"}
         </Button>
+        
+        <div className="mt-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            className="w-full"
+            onClick={() => navigateToDashboard()}
+          >
+            Ir para Dashboard (alternativo)
+          </Button>
+        </div>
       </form>
 
       <div className="mt-4 p-3 bg-gray-100 rounded text-sm">
