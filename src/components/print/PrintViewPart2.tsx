@@ -6,6 +6,7 @@ import {
   renderSection,
   renderYesNoDetail,
   renderYesNoMonths,
+  renderList,
 } from "./PrintViewUtils";
 
 type PrintViewPart2Props = {
@@ -19,20 +20,22 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
       {renderSection(
         "Histórico da Gestação",
         <>
-          {renderField(
-            "Gestação planejada",
-            renderYesNoDetail(data.pregnancyHistory.plannedPregnancy)
-          )}
-          {renderField(
-            "Gestação desejada",
-            renderYesNoDetail(data.pregnancyHistory.wantedPregnancy)
-          )}
-          {renderField(
-            "Realizou pré-natal",
-            renderYesNoDetail(data.pregnancyHistory.prenatalCare)
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 print:gap-1">
+            {renderField(
+              "Gestação planejada",
+              renderYesNoDetail(data.pregnancyHistory.plannedPregnancy)
+            )}
+            {renderField(
+              "Gestação desejada",
+              renderYesNoDetail(data.pregnancyHistory.wantedPregnancy)
+            )}
+            {renderField(
+              "Realizou pré-natal",
+              renderYesNoDetail(data.pregnancyHistory.prenatalCare)
+            )}
+          </div>
 
-          <div className="mb-2">
+          <div className="mt-2 print:mt-1">
             <span className="font-semibold">Tipo de parto:</span>{" "}
             <span>
               {data.pregnancyHistory.deliveryType.normal
@@ -43,22 +46,24 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
             </span>
           </div>
 
-          {renderField(
-            "Tempo de gestação (semanas)",
-            data.pregnancyHistory.gestationalWeeks
-          )}
-          {renderField(
-            "Complicações durante a gestação",
-            data.pregnancyHistory.pregnancyComplications
-          )}
-          {renderField(
-            "Período neonatal",
-            data.pregnancyHistory.neonatalPeriod
-          )}
-          {renderField(
-            "Amamentação",
-            renderYesNoDetail(data.pregnancyHistory.breastfeedingDuration)
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 print:gap-1 mt-2">
+            {renderField(
+              "Tempo de gestação (semanas)",
+              data.pregnancyHistory.gestationalWeeks
+            )}
+            {renderField(
+              "Complicações durante a gestação",
+              data.pregnancyHistory.pregnancyComplications
+            )}
+            {renderField(
+              "Período neonatal",
+              data.pregnancyHistory.neonatalPeriod
+            )}
+            {renderField(
+              "Amamentação",
+              renderYesNoDetail(data.pregnancyHistory.breastfeedingDuration)
+            )}
+          </div>
         </>,
         "pregnancy-history-section"
       )}
@@ -67,21 +72,32 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
       {renderSection(
         "Desenvolvimento do Bebê",
         <>
-          {renderField(
-            "Sustentação da cabeça",
-            renderYesNoMonths(data.babyDevelopment.headControl)
-          )}
-          {renderField(
-            "Rolou",
-            renderYesNoMonths(data.babyDevelopment.rolledOver)
-          )}
-          {renderField(
-            "Engatinhou",
-            renderYesNoMonths(data.babyDevelopment.crawled)
-          )}
-          {renderField("Sentou", renderYesNoMonths(data.babyDevelopment.satUp))}
-          {renderField("Andou", renderYesNoMonths(data.babyDevelopment.walked))}
-          {renderField("Falou", renderYesNoMonths(data.babyDevelopment.spoke))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 print:gap-1">
+            {renderField(
+              "Sustentação da cabeça",
+              renderYesNoMonths(data.babyDevelopment.headControl)
+            )}
+            {renderField(
+              "Rolou",
+              renderYesNoMonths(data.babyDevelopment.rolledOver)
+            )}
+            {renderField(
+              "Engatinhou",
+              renderYesNoMonths(data.babyDevelopment.crawled)
+            )}
+            {renderField(
+              "Sentou",
+              renderYesNoMonths(data.babyDevelopment.satUp)
+            )}
+            {renderField(
+              "Andou",
+              renderYesNoMonths(data.babyDevelopment.walked)
+            )}
+            {renderField(
+              "Falou",
+              renderYesNoMonths(data.babyDevelopment.spoke)
+            )}
+          </div>
         </>,
         "baby-development-section"
       )}
@@ -90,48 +106,50 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
       {renderSection(
         "Desenvolvimento da Criança",
         <>
-          {renderField(
-            "Sobe escadas",
-            renderYesNoDetail(data.childDevelopment.climbsStairs)
-          )}
-          {renderField(
-            "Movimenta-se independentemente",
-            renderYesNoDetail(data.childDevelopment.movesIndependently)
-          )}
-          {renderField(
-            "Pula com os dois pés",
-            renderYesNoDetail(data.childDevelopment.jumpsWithBothFeet)
-          )}
-          {renderField(
-            "Transfere objetos entre as mãos",
-            renderYesNoDetail(
-              data.childDevelopment.transfersObjectsBetweenHands
-            )
-          )}
-          {renderField(
-            "Encaixa objetos",
-            renderYesNoDetail(data.childDevelopment.fitsObjectsTogether)
-          )}
-          {renderField(
-            "Preensão de lápis",
-            renderYesNoDetail(data.childDevelopment.pencilGrip)
-          )}
-          {renderField(
-            "Explora brinquedos",
-            renderYesNoDetail(data.childDevelopment.exploresToys)
-          )}
-          {renderField(
-            "Atribui função aos objetos",
-            renderYesNoDetail(data.childDevelopment.assignsFunctionToObjects)
-          )}
-          {renderField(
-            "Mantém contato visual com objetos",
-            renderYesNoDetail(
-              data.childDevelopment.maintainsEyeContactWithObjects
-            )
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 print:gap-1">
+            {renderField(
+              "Sobe escadas",
+              renderYesNoDetail(data.childDevelopment.climbsStairs)
+            )}
+            {renderField(
+              "Movimenta-se independentemente",
+              renderYesNoDetail(data.childDevelopment.movesIndependently)
+            )}
+            {renderField(
+              "Pula com os dois pés",
+              renderYesNoDetail(data.childDevelopment.jumpsWithBothFeet)
+            )}
+            {renderField(
+              "Transfere objetos entre as mãos",
+              renderYesNoDetail(
+                data.childDevelopment.transfersObjectsBetweenHands
+              )
+            )}
+            {renderField(
+              "Encaixa objetos",
+              renderYesNoDetail(data.childDevelopment.fitsObjectsTogether)
+            )}
+            {renderField(
+              "Preensão de lápis",
+              renderYesNoDetail(data.childDevelopment.pencilGrip)
+            )}
+            {renderField(
+              "Explora brinquedos",
+              renderYesNoDetail(data.childDevelopment.exploresToys)
+            )}
+            {renderField(
+              "Atribui função aos objetos",
+              renderYesNoDetail(data.childDevelopment.assignsFunctionToObjects)
+            )}
+            {renderField(
+              "Mantém contato visual com objetos",
+              renderYesNoDetail(
+                data.childDevelopment.maintainsEyeContactWithObjects
+              )
+            )}
+          </div>
 
-          <div className="mb-2">
+          <div className="mt-2 print:mt-1">
             <span className="font-semibold">Lateralidade:</span>{" "}
             <span>
               {data.childDevelopment.laterality["left-hand"]
@@ -162,79 +180,83 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
       {renderSection(
         "Interação Social",
         <>
-          {renderField(
-            "Mantém contato visual",
-            renderYesNoDetail(data.socialInteraction.eyeContact)
-          )}
-          {renderField(
-            "Interage com outras pessoas",
-            renderYesNoDetail(data.socialInteraction.interactsWithOthers)
-          )}
-          {renderField(
-            "Atenção compartilhada",
-            renderYesNoDetail(data.socialInteraction.sharedAttention)
-          )}
-          {renderField(
-            "Segue comandos simples",
-            renderYesNoDetail(data.socialInteraction.followsSimpleCommands)
-          )}
-          {renderField(
-            "Segue comandos complexos",
-            renderYesNoDetail(data.socialInteraction.followsComplexCommands)
-          )}
-          {renderField(
-            "Frequenta festas",
-            renderYesNoDetail(data.socialInteraction.attendsParties)
-          )}
-          {renderField(
-            "Vai a shopping centers",
-            renderYesNoDetail(data.socialInteraction.visitsShoppingMalls)
-          )}
-          {renderField(
-            "Vai a supermercados",
-            renderYesNoDetail(data.socialInteraction.visitsSupermarkets)
-          )}
-          {renderField(
-            "É cooperativo na escola",
-            renderYesNoDetail(data.socialInteraction.cooperativeAtSchool)
-          )}
-          {renderField(
-            "Usa a fala para se comunicar",
-            renderYesNoDetail(data.socialInteraction.usesSpeechToCommunicate)
-          )}
-          {renderField(
-            "Brinca com outras crianças",
-            renderYesNoDetail(data.socialInteraction.playsWithOtherChildren)
-          )}
-          {renderField(
-            "Bate em outras crianças",
-            renderYesNoDetail(data.socialInteraction.hitsPeers)
-          )}
-          {renderField(
-            "Bate em adultos",
-            renderYesNoDetail(data.socialInteraction.hitsAdults)
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 print:gap-1">
+            {renderField(
+              "Mantém contato visual",
+              renderYesNoDetail(data.socialInteraction.eyeContact)
+            )}
+            {renderField(
+              "Interage com outras pessoas",
+              renderYesNoDetail(data.socialInteraction.interactsWithOthers)
+            )}
+            {renderField(
+              "Atenção compartilhada",
+              renderYesNoDetail(data.socialInteraction.sharedAttention)
+            )}
+            {renderField(
+              "Segue comandos simples",
+              renderYesNoDetail(data.socialInteraction.followsSimpleCommands)
+            )}
+            {renderField(
+              "Segue comandos complexos",
+              renderYesNoDetail(data.socialInteraction.followsComplexCommands)
+            )}
+            {renderField(
+              "Frequenta festas",
+              renderYesNoDetail(data.socialInteraction.attendsParties)
+            )}
+            {renderField(
+              "Vai a shopping centers",
+              renderYesNoDetail(data.socialInteraction.visitsShoppingMalls)
+            )}
+            {renderField(
+              "Vai a supermercados",
+              renderYesNoDetail(data.socialInteraction.visitsSupermarkets)
+            )}
+            {renderField(
+              "É cooperativo na escola",
+              renderYesNoDetail(data.socialInteraction.cooperativeAtSchool)
+            )}
+            {renderField(
+              "Usa a fala para se comunicar",
+              renderYesNoDetail(data.socialInteraction.usesSpeechToCommunicate)
+            )}
+            {renderField(
+              "Brinca com outras crianças",
+              renderYesNoDetail(data.socialInteraction.playsWithOtherChildren)
+            )}
+            {renderField(
+              "Bate em outras crianças",
+              renderYesNoDetail(data.socialInteraction.hitsPeers)
+            )}
+            {renderField(
+              "Bate em adultos",
+              renderYesNoDetail(data.socialInteraction.hitsAdults)
+            )}
+          </div>
 
-          <div className="mt-4">
-            <h3 className="font-semibold mb-2">Perfil da criança:</h3>
-            <div className="pl-4">
+          <div className="mt-3 print:mt-2">
+            <h3 className="font-semibold mb-2 print:mb-1">
+              Perfil da criança:
+            </h3>
+            <div className="pl-4 print:pl-2">
               {data.socialInteraction.childProfile.agitated && (
-                <div className="mb-1">- Agitada</div>
+                <div className="mb-1 print:mb-0.5">- Agitada</div>
               )}
               {data.socialInteraction.childProfile.calm && (
-                <div className="mb-1">- Calma</div>
+                <div className="mb-1 print:mb-0.5">- Calma</div>
               )}
               {data.socialInteraction.childProfile.insecure && (
-                <div className="mb-1">- Insegura</div>
+                <div className="mb-1 print:mb-0.5">- Insegura</div>
               )}
               {data.socialInteraction.childProfile.impatient && (
-                <div className="mb-1">- Impaciente</div>
+                <div className="mb-1 print:mb-0.5">- Impaciente</div>
               )}
               {data.socialInteraction.childProfile.defiant && (
-                <div className="mb-1">- Desafiadora</div>
+                <div className="mb-1 print:mb-0.5">- Desafiadora</div>
               )}
               {data.socialInteraction.childProfile.details && (
-                <div className="mt-2">
+                <div className="mt-1 print:mt-0.5 text-sm">
                   {data.socialInteraction.childProfile.details}
                 </div>
               )}
@@ -248,53 +270,64 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
       {renderSection(
         "Manifestações Comportamentais",
         <>
-          {renderField(
-            "Dificuldade em fazer amigos",
-            renderYesNoDetail(
-              data.behavioralManifestations.difficultyMakingFriends
-            )
-          )}
-          {renderField(
-            "Chora para conseguir o que quer",
-            data.behavioralManifestations.criesToGetWhatTheyWant ? "Sim" : "Não"
-          )}
-          {renderField(
-            "Chora quando contrariado",
-            renderYesNoDetail(data.behavioralManifestations.criesWhenDenied)
-          )}
-          {renderField(
-            "Fica confortável longe dos pais",
-            renderYesNoDetail(
-              data.behavioralManifestations.comfortableAwayFromParents
-            )
-          )}
-          {renderField(
-            "Necessita de estímulos extras",
-            renderYesNoDetail(
-              data.behavioralManifestations.needsExtraStimulation
-            )
-          )}
-          {renderField(
-            "Comportamento solitário",
-            renderYesNoDetail(data.behavioralManifestations.solitaryBehavior)
-          )}
-          {renderField(
-            "Adapta-se a mudanças na rotina",
-            renderYesNoDetail(
-              data.behavioralManifestations.adaptsToRoutineChanges
-            )
-          )}
-          {renderField(
-            "Comportamentos repetitivos",
-            renderYesNoDetail(data.behavioralManifestations.repetitiveBehaviors)
-          )}
-          {renderField(
-            "Autoagressão",
-            renderYesNoDetail(data.behavioralManifestations.selfHarm)
-          )}
-          {renderField(
-            "Observações adicionais",
-            data.behavioralManifestations.notes
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 print:gap-1">
+            {renderField(
+              "Dificuldade em fazer amigos",
+              renderYesNoDetail(
+                data.behavioralManifestations.difficultyMakingFriends
+              )
+            )}
+            {renderField(
+              "Chora para conseguir o que quer",
+              data.behavioralManifestations.criesToGetWhatTheyWant
+                ? "Sim"
+                : "Não"
+            )}
+            {renderField(
+              "Chora quando contrariado",
+              renderYesNoDetail(data.behavioralManifestations.criesWhenDenied)
+            )}
+            {renderField(
+              "Fica confortável longe dos pais",
+              renderYesNoDetail(
+                data.behavioralManifestations.comfortableAwayFromParents
+              )
+            )}
+            {renderField(
+              "Necessita de estímulos extras",
+              renderYesNoDetail(
+                data.behavioralManifestations.needsExtraStimulation
+              )
+            )}
+            {renderField(
+              "Comportamento solitário",
+              renderYesNoDetail(data.behavioralManifestations.solitaryBehavior)
+            )}
+            {renderField(
+              "Adapta-se a mudanças na rotina",
+              renderYesNoDetail(
+                data.behavioralManifestations.adaptsToRoutineChanges
+              )
+            )}
+            {renderField(
+              "Comportamentos repetitivos",
+              renderYesNoDetail(
+                data.behavioralManifestations.repetitiveBehaviors
+              )
+            )}
+            {renderField(
+              "Autoagressão",
+              renderYesNoDetail(data.behavioralManifestations.selfHarm)
+            )}
+          </div>
+
+          {data.behavioralManifestations.notes && (
+            <div className="mt-2 print:mt-1">
+              <span className="font-semibold">Observações adicionais:</span>
+              <div className="mt-1 print:mt-0.5 ml-4 print:ml-2 text-sm">
+                {data.behavioralManifestations.notes}
+              </div>
+            </div>
           )}
         </>,
         "behavioral-manifestations-section"

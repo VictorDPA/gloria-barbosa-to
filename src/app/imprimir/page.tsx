@@ -1,3 +1,4 @@
+// src/app/imprimir/page.tsx
 "use client";
 
 import React, { useRef, useState } from "react";
@@ -7,13 +8,14 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PrintView } from "@/components/print/PrintView";
 import { useAnamneseStore } from "@/lib/store";
-import { exportToPdf, generatePdfFilename } from "@/lib/pdfExporter"; // Importando do novo arquivo
+import { exportToPdf, generatePdfFilename } from "@/lib/pdfExporter";
 
 export default function PrintPage() {
   const router = useRouter();
   const currentAnamnese = useAnamneseStore((state) => state.currentAnamnese);
   const printRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   const [customFilename, setCustomFilename] = useState("");
   const [showFilenameInput, setShowFilenameInput] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -22,15 +24,22 @@ export default function PrintPage() {
   const defaultFilename = generatePdfFilename(currentAnamnese);
 
   const handlePrint = () => {
+    // Indicar que está preparando para impressão
+    setIsPrinting(true);
+
     // Adicionar classe para melhorar qualidade de impressão
     document.body.classList.add("print-optimized");
 
-    // Pequeno atraso para permitir que os estilos sejam aplicados
+    // Pequeno atraso para permitir que os estilos sejam aplicados corretamente
     setTimeout(() => {
       window.print();
-      // Remover a classe depois da impressão
-      document.body.classList.remove("print-optimized");
-    }, 100);
+
+      // Após o diálogo de impressão fechar, remover as classes
+      setTimeout(() => {
+        document.body.classList.remove("print-optimized");
+        setIsPrinting(false);
+      }, 1000);
+    }, 300);
   };
 
   const handleExportPdf = async () => {
@@ -38,24 +47,41 @@ export default function PrintPage() {
     setExportError(null);
 
     try {
+      // Preparar a página para exportação
+      document.body.classList.add("prepare-export");
+
       // Usar o nome personalizado se fornecido e válido
       const filename = customFilename.trim()
         ? customFilename.trim()
         : undefined;
 
-      // Exportar usando a função otimizada
-      await exportToPdf("print-content", currentAnamnese, filename);
+      // Pequeno atraso para permitir que os estilos sejam aplicados
+      setTimeout(async () => {
+        try {
+          // Exportar usando a função otimizada
+          await exportToPdf("print-content", currentAnamnese, filename);
 
-      // Esconder o input de nome após exportação bem-sucedida
-      if (showFilenameInput) {
-        setShowFilenameInput(false);
-      }
+          // Esconder o input de nome após exportação bem-sucedida
+          if (showFilenameInput) {
+            setShowFilenameInput(false);
+          }
+        } catch (error) {
+          console.error("Erro ao exportar para PDF:", error);
+          setExportError(
+            "Ocorreu um erro ao exportar para PDF. Por favor, tente novamente."
+          );
+        } finally {
+          // Remover classe de preparação
+          document.body.classList.remove("prepare-export");
+          setIsExporting(false);
+        }
+      }, 300);
     } catch (error) {
-      console.error("Erro ao exportar para PDF:", error);
+      console.error("Erro ao preparar exportação para PDF:", error);
+      document.body.classList.remove("prepare-export");
       setExportError(
-        "Ocorreu um erro ao exportar para PDF. Por favor, tente novamente."
+        "Ocorreu um erro ao preparar a exportação. Por favor, tente novamente."
       );
-    } finally {
       setIsExporting(false);
     }
   };
@@ -88,8 +114,12 @@ export default function PrintPage() {
             <Button variant="outline" onClick={handleBackToDashboard}>
               Voltar
             </Button>
-            <Button variant="secondary" onClick={handlePrint}>
-              Imprimir
+            <Button
+              variant="secondary"
+              onClick={handlePrint}
+              disabled={isPrinting}
+            >
+              {isPrinting ? "Preparando..." : "Imprimir"}
             </Button>
             <Button
               variant="primary"
@@ -150,7 +180,12 @@ export default function PrintPage() {
           </div>
         )}
 
-        <div id="print-content" ref={printRef} className="print-container">
+        {/* Conteúdo para impressão/exportação */}
+        <div
+          id="print-content"
+          ref={printRef}
+          className="print-container bg-white rounded-lg shadow-sm p-6 print:p-0 print:shadow-none"
+        >
           <PrintView data={currentAnamnese} />
         </div>
 
@@ -158,8 +193,12 @@ export default function PrintPage() {
           <Button variant="outline" onClick={handleBackToDashboard}>
             Voltar
           </Button>
-          <Button variant="secondary" onClick={handlePrint}>
-            Imprimir
+          <Button
+            variant="secondary"
+            onClick={handlePrint}
+            disabled={isPrinting}
+          >
+            {isPrinting ? "Preparando..." : "Imprimir"}
           </Button>
           <Button
             variant="primary"
