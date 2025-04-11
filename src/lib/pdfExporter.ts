@@ -31,6 +31,7 @@ export function generatePdfFilename(anamnese: Anamnese): string {
 /**
  * Exporta o conteúdo HTML para PDF com melhor qualidade e formatação
  */
+// Função corrigida para exportar conteúdo HTML para PDF
 export async function exportToPdf(
   elementId: string,
   anamnese: Anamnese,
@@ -52,202 +53,115 @@ export async function exportToPdf(
       unit: "mm",
       format: "a4",
       compress: true,
-      hotfixes: ["px_scaling"], // Corrigir problemas de escala
     });
 
-    // Dimensões da página A4
+    // Configurações de página
     const pageWidth = 210;
     const pageHeight = 297;
     const margin = 15;
     const contentWidth = pageWidth - 2 * margin;
     const contentHeight = pageHeight - 2 * margin;
 
-    // Dividir o conteúdo em seções principais para evitar problemas de renderização
-    const mainSections = [
-      document.getElementById("section-part1"),
-      document.getElementById("section-part2"),
-      document.getElementById("section-part3"),
-      document.getElementById("section-part4"),
-    ].filter(Boolean) as HTMLElement[];
+    // Capturar o conteúdo inteiro como uma única imagem
+    // Esta abordagem simplificada ajuda a evitar problemas de paginação
+    const canvas = await html2canvas(element, {
+      scale: 2, // Maior escala para melhor qualidade
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#FFFFFF",
+      logging: false,
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+    });
 
-    if (mainSections.length === 0) {
-      // Se não encontrar as seções específicas, usar o elemento completo
-      mainSections.push(element);
-    }
+    // Determinar o número de páginas necessário baseado na altura do conteúdo
+    const imgHeight = (canvas.height * contentWidth) / canvas.width;
+    const pageCount = Math.ceil(imgHeight / contentHeight);
 
-    // Configurações para melhor qualidade
-    const scale = 2; // Maior escala para melhor qualidade
-    let currentPage = 0;
-
-    // Processar cada seção principal
-    for (let i = 0; i < mainSections.length; i++) {
-      const section = mainSections[i];
-
-      // Adicionar nova página (exceto para a primeira seção)
+    // Adicionar cada segmento do conteúdo como uma página separada
+    for (let i = 0; i < pageCount; i++) {
+      // Se não for a primeira página, adicionar uma nova página
       if (i > 0) {
         pdf.addPage();
       }
-      currentPage = i;
 
-      try {
-        // Preparar a seção para captura
-        const sectionClone = section.cloneNode(true) as HTMLElement;
-        sectionClone.style.width = `${contentWidth}mm`;
-        sectionClone.style.margin = "0";
-        sectionClone.style.padding = "0";
-        sectionClone.style.backgroundColor = "white";
+      // Calcular a porção do canvas para esta página
+      const sourceY = i * (canvas.height / pageCount);
+      const sourceHeight = canvas.height / pageCount;
 
-        // Criar um contêiner temporário para renderizar a seção isoladamente
-        const tempContainer = document.createElement("div");
-        tempContainer.style.position = "absolute";
-        tempContainer.style.top = "-9999px";
-        tempContainer.style.left = "-9999px";
-        tempContainer.style.width = `${contentWidth}mm`;
-        tempContainer.style.backgroundColor = "white";
-        tempContainer.appendChild(sectionClone);
-        document.body.appendChild(tempContainer);
+      // Criar um canvas temporário para esta página
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = sourceHeight;
 
-        // Capturar a imagem com html2canvas com configurações otimizadas
-        const canvas = await html2canvas(tempContainer, {
-          scale: scale,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: "#FFFFFF",
-          logging: false,
-          imageTimeout: 30000,
-          onclone: (clonedDoc) => {
-            // Ajustar estilos no clone
-            const clonedElement = clonedDoc.body.querySelector(
-              `#${section.id}`
-            );
-            if (clonedElement) {
-              (clonedElement as HTMLElement).style.width = `${contentWidth}mm`;
-              (clonedElement as HTMLElement).style.padding = "0";
-              (clonedElement as HTMLElement).style.margin = "0";
-            }
-          },
-        });
+      // Desenhar a porção relevante no canvas temporário
+      const ctx = tempCanvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(
+          canvas,
+          0,
+          sourceY,
+          canvas.width,
+          sourceHeight,
+          0,
+          0,
+          tempCanvas.width,
+          tempCanvas.height
+        );
 
-        // Limpar o contêiner temporário
-        document.body.removeChild(tempContainer);
-
-        // Calcular dimensões proporcionais
+        // Adicionar a imagem ao PDF
+        const imgData = tempCanvas.toDataURL("image/jpeg", 1.0);
         const imgWidth = contentWidth;
-        const imgHeight = (canvas.height * contentWidth) / canvas.width;
-
-        // Verificar se a imagem excede a altura da página
-        if (imgHeight <= contentHeight) {
-          // A imagem cabe na página atual
-          const imgData = canvas.toDataURL("image/jpeg", 1.0);
-          pdf.addImage(
-            imgData,
-            "JPEG",
-            margin,
-            margin,
-            imgWidth,
-            imgHeight,
-            undefined,
-            "FAST"
-          );
-        } else {
-          // A imagem é maior que a página, dividir em múltiplas páginas
-          let remainingHeight = canvas.height;
-          let currentPosition = 0;
-
-          // Enquanto houver conteúdo para processar
-          while (remainingHeight > 0) {
-            // Calcular a altura proporcional que cabe na página
-            const canvasChunkHeight =
-              (contentHeight * canvas.width) / contentWidth;
-
-            // Criar um canvas temporário para a parte atual
-            const tempCanvas = document.createElement("canvas");
-            tempCanvas.width = canvas.width;
-            tempCanvas.height = Math.min(canvasChunkHeight, remainingHeight);
-            const ctx = tempCanvas.getContext("2d")!;
-
-            // Desenhar a parte relevante do canvas original
-            ctx.drawImage(
-              canvas,
-              0,
-              currentPosition,
-              canvas.width,
-              tempCanvas.height,
-              0,
-              0,
-              canvas.width,
-              tempCanvas.height
-            );
-
-            // Converter para imagem e adicionar ao PDF
-            const imgData = tempCanvas.toDataURL("image/jpeg", 1.0);
-            const chunkHeight =
-              (tempCanvas.height * contentWidth) / canvas.width;
-
-            // Se não for a primeira parte, adicionar nova página
-            if (currentPosition > 0) {
-              pdf.addPage();
-              currentPage++;
-            }
-
-            pdf.addImage(
-              imgData,
-              "JPEG",
-              margin,
-              margin,
-              imgWidth,
-              chunkHeight,
-              undefined,
-              "FAST"
-            );
-
-            // Atualizar posição e altura restante
-            currentPosition += tempCanvas.height;
-            remainingHeight -= tempCanvas.height;
-
-            // Se ainda houver conteúdo para processar, adicionar nova página
-            if (remainingHeight > 0) {
-              pdf.addPage();
-              currentPage++;
-            }
-          }
-        }
-      } catch (sectionError) {
-        console.error(`Erro ao processar seção ${i}:`, sectionError);
-      }
-    }
-
-    // Adicionar assinatura se necessário
-    const signatureElement =
-      document.querySelector(".signature-line")?.parentElement;
-    if (signatureElement) {
-      try {
-        // Verificar se já estamos na última página
-        if (currentPage < mainSections.length - 1) {
-          pdf.addPage();
-        }
-
-        const canvas = await html2canvas(signatureElement as HTMLElement, {
-          scale: scale,
-          backgroundColor: "#FFFFFF",
-        });
-
-        const imgWidth = contentWidth / 2;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const imgPageHeight = (tempCanvas.height * contentWidth) / canvas.width;
 
         pdf.addImage(
-          canvas.toDataURL("image/jpeg", 1.0),
+          imgData,
           "JPEG",
-          margin + contentWidth / 4, // Centralizar
-          margin + contentHeight / 2, // Posicionar na metade inferior
+          margin,
+          margin,
           imgWidth,
-          imgHeight,
+          imgPageHeight,
           undefined,
           "FAST"
         );
-      } catch (signatureError) {
-        console.error("Erro ao processar assinatura:", signatureError);
       }
+    }
+
+    // Adicionar assinatura se existir
+    const signatureElement =
+      document.querySelector(".signature-line")?.parentElement;
+    if (signatureElement && pageCount > 0) {
+      // Adicionar na última página se houver espaço, ou adicionar uma nova página
+      const signatureCanvas = await html2canvas(
+        signatureElement as HTMLElement,
+        {
+          scale: 2,
+          backgroundColor: "#FFFFFF",
+        }
+      );
+
+      const signatureWidth = contentWidth / 2;
+      const signatureHeight =
+        (signatureCanvas.height * signatureWidth) / signatureCanvas.width;
+
+      // Verificar se precisa de uma nova página para a assinatura
+      const lastPageY = (pageCount - 1) * contentHeight;
+      const remainingSpace = contentHeight - (imgHeight - lastPageY);
+
+      if (remainingSpace < signatureHeight + 20) {
+        pdf.addPage();
+      }
+
+      pdf.addImage(
+        signatureCanvas.toDataURL("image/jpeg", 1.0),
+        "JPEG",
+        margin + contentWidth / 4, // Centralizar
+        margin + contentHeight / 2, // Posicionar na metade inferior da página
+        signatureWidth,
+        signatureHeight,
+        undefined,
+        "FAST"
+      );
     }
 
     // Remover classe de estilização
