@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
           const loginUrl = new URL("/login", request.url);
           return NextResponse.redirect(loginUrl);
         }
-      } catch (error) {
+      } catch {
         // Se não conseguir interpretar o cookie do Zustand, verificar o método direto
         if (!directAuth || directAuth.value !== "true") {
           const loginUrl = new URL("/login", request.url);
@@ -60,7 +60,7 @@ export function middleware(request: NextRequest) {
         if (storage?.state?.isAuthenticated) {
           isAuthenticated = true;
         }
-      } catch (error) {
+      } catch {
         // Ignorar erro de parsing
       }
     }
