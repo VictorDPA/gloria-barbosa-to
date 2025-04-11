@@ -73,7 +73,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
             "Observações sobre vestuário",
             data.dailyLivingActivities.dressing.notes
           )}
-        </>
+        </>,
+        "dressing-section"
       )}
 
       {/* 18. Atividades de Vida Diária - Alimentação */}
@@ -156,7 +157,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
             "Observações sobre alimentação",
             data.dailyLivingActivities.feeding.notes
           )}
-        </>
+        </>,
+        "feeding-section"
       )}
 
       {/* 19. Habilidades Motoras */}
@@ -183,7 +185,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
             "Utiliza tesoura",
             renderYesNoDetail(data.motorSkills.usesScissors)
           )}
-        </>
+        </>,
+        "motor-skills-section"
       )}
 
       {/* 20. Percepção Sensorial */}
@@ -206,7 +209,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
             "Fixa-se em objetos que giram",
             renderYesNoDetail(data.sensoryPerception.staresAtSpinningObjects)
           )}
-        </>
+        </>,
+        "sensory-perception-section"
       )}
 
       {/* 21. Propriocepção e Sistema Vestibular */}
@@ -241,7 +245,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
               data.proprioceptionAndVestibular.bumpsIntoObjectsOrPeople
             )
           )}
-        </>
+        </>,
+        "proprioception-vestibular-section"
       )}
 
       {/* 22. Percepção Tátil */}
@@ -268,7 +273,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
             "Reage agressivamente ao toque",
             renderYesNoDetail(data.tactilePerception.reactsAggressivelyToTouch)
           )}
-        </>
+        </>,
+        "tactile-perception-section"
       )}
 
       {/* 23. Diagnóstico Terapêutico Ocupacional */}
@@ -278,7 +284,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
           <div className="whitespace-pre-line">
             {data.therapeuticOccupationalDiagnosis || "-"}
           </div>
-        </>
+        </>,
+        "therapeutic-diagnosis-section"
       )}
 
       {/* 24. Prognóstico */}
@@ -286,7 +293,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
         "Prognóstico",
         <>
           <div className="whitespace-pre-line">{data.prognosis || "-"}</div>
-        </>
+        </>,
+        "prognosis-section"
       )}
 
       {/* 25. Plano Terapêutico Ocupacional */}
@@ -305,7 +313,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
             "Procedimentos Terapêuticos",
             data.occupationalTherapyPlan.procedures
           )}
-        </>
+        </>,
+        "therapy-plan-section"
       )}
 
       {/* 26. Informações Adicionais */}
@@ -318,7 +327,8 @@ export const PrintViewPart4: React.FC<PrintViewPart4Props> = ({ data }) => {
             "Terapeuta Responsável",
             data.additionalInformation.therapist
           )}
-        </>
+        </>,
+        "additional-information-section"
       )}
     </>
   );

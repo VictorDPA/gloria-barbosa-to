@@ -1,7 +1,6 @@
 // src/components/print/PrintViewPart2.tsx
 import React from "react";
 import { Anamnese } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
 import {
   renderField,
   renderSection,
@@ -60,7 +59,8 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
             "Amamentação",
             renderYesNoDetail(data.pregnancyHistory.breastfeedingDuration)
           )}
-        </>
+        </>,
+        "pregnancy-history-section"
       )}
 
       {/* 6. Desenvolvimento do Bebê */}
@@ -82,7 +82,8 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
           {renderField("Sentou", renderYesNoMonths(data.babyDevelopment.satUp))}
           {renderField("Andou", renderYesNoMonths(data.babyDevelopment.walked))}
           {renderField("Falou", renderYesNoMonths(data.babyDevelopment.spoke))}
-        </>
+        </>,
+        "baby-development-section"
       )}
 
       {/* 7. Desenvolvimento da Criança */}
@@ -142,7 +143,8 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
                 : "-"}
             </span>
           </div>
-        </>
+        </>,
+        "child-development-section"
       )}
 
       {/* 8. Rotina Diária */}
@@ -152,7 +154,8 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
           {renderField("Atividades pela manhã", data.dailyRoutine.morning)}
           {renderField("Atividades à tarde", data.dailyRoutine.afternoon)}
           {renderField("Atividades à noite", data.dailyRoutine.night)}
-        </>
+        </>,
+        "daily-routine-section"
       )}
 
       {/* 9. Interação Social */}
@@ -237,7 +240,8 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
               )}
             </div>
           </div>
-        </>
+        </>,
+        "social-interaction-section"
       )}
 
       {/* 10. Manifestações Comportamentais */}
@@ -292,7 +296,8 @@ export const PrintViewPart2: React.FC<PrintViewPart2Props> = ({ data }) => {
             "Observações adicionais",
             data.behavioralManifestations.notes
           )}
-        </>
+        </>,
+        "behavioral-manifestations-section"
       )}
     </>
   );

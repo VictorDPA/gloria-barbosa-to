@@ -41,7 +41,8 @@ export const PrintViewPart3: React.FC<PrintViewPart3Props> = ({ data }) => {
               )}
             </>
           )}
-        </>
+        </>,
+        "education-section"
       )}
 
       {/* 12. Habilidades de Reconhecimento */}
@@ -76,7 +77,8 @@ export const PrintViewPart3: React.FC<PrintViewPart3Props> = ({ data }) => {
             "Leitura e escrita",
             renderYesNoDetail(data.recognitionSkills.readingWriting)
           )}
-        </>
+        </>,
+        "recognition-skills-section"
       )}
 
       {/* 13. Dinâmica Familiar */}
@@ -107,7 +109,8 @@ export const PrintViewPart3: React.FC<PrintViewPart3Props> = ({ data }) => {
             "Interesses específicos/hiperfoco",
             data.familyDynamics.hyperfocus
           )}
-        </>
+        </>,
+        "family-dynamics-section"
       )}
 
       {/* 14. Exames Complementares */}
@@ -127,7 +130,8 @@ export const PrintViewPart3: React.FC<PrintViewPart3Props> = ({ data }) => {
             data.complementaryExams.neuropsychologicalAssessment ? "Sim" : "Não"
           )}
           {renderField("Outros documentos", data.complementaryExams.other)}
-        </>
+        </>,
+        "complementary-exams-section"
       )}
 
       {/* 15. Atividades de Vida Diária - Higiene */}
@@ -219,7 +223,8 @@ export const PrintViewPart3: React.FC<PrintViewPart3Props> = ({ data }) => {
             "Observações sobre higiene",
             data.dailyLivingActivities.hygiene.notes
           )}
-        </>
+        </>,
+        "hygiene-section"
       )}
 
       {/* 16. Atividades de Vida Diária - Banho */}
@@ -246,7 +251,8 @@ export const PrintViewPart3: React.FC<PrintViewPart3Props> = ({ data }) => {
             "Observações sobre o banho",
             data.dailyLivingActivities.bathing.notes
           )}
-        </>
+        </>,
+        "bathing-section"
       )}
     </>
   );

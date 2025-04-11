@@ -79,9 +79,22 @@ export const renderField = (
 };
 
 // Função para renderizar uma seção do formulário
-export const renderSection = (title: string, children: React.ReactNode) => {
+export const renderSection = (
+  title: string,
+  children: React.ReactNode,
+  sectionClass?: string
+) => {
+  // Converta o título para uma classe CSS
+  const defaultClass =
+    title
+      .toLowerCase()
+      .replace(/[^\w\s]/gi, "")
+      .replace(/\s+/g, "-") + "-section";
+
+  const className = sectionClass || defaultClass;
+
   return (
-    <div className="mb-6 break-inside-avoid">
+    <div className={`mb-6 no-break print-section ${className}`}>
       <h2 className="text-xl font-bold border-b border-slate-900 pb-1 mb-3">
         {title}
       </h2>

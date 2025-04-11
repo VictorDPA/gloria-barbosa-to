@@ -34,55 +34,78 @@ export function generatePdfFilename(anamnese: Anamnese): string {
   return `${fileName}_${format(new Date(), "yyyy_MM_dd")}`;
 }
 
-// Função melhorada para exportar para PDF
+// Função corrigida para exportar para PDF usando jsPDF
 export async function exportToPdf(
   elementId: string,
   anamnese: Anamnese,
   customFilename?: string
 ): Promise<void> {
-  const element = document.getElementById(elementId);
-  if (!element) {
-    throw new Error("Elemento não encontrado");
-  }
-
   try {
-    // Configurações para melhorar a qualidade da captura
-    const canvas = await html2canvas(element, {
-      scale: 2, // Aumentar a escala para melhor qualidade
-      useCORS: true,
-      logging: false,
-      allowTaint: true,
-      removeContainer: true,
-      backgroundColor: "#ffffff",
-    });
+    // Obter o elemento que contém o conteúdo a ser exportado
+    const element = document.getElementById(elementId);
+    if (!element) {
+      throw new Error("Elemento não encontrado");
+    }
 
-    const imgData = canvas.toDataURL("image/png");
-
-    // Dimensões de página A4 em mm
+    // Configurar o documento PDF
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "mm",
       format: "a4",
+      compress: true,
     });
 
-    const imgWidth = 210; // Largura A4
-    const pageHeight = 297; // Altura A4
+    // Dimensões de página A4 em mm
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const margin = 15; // margem em mm
+    const contentWidth = pageWidth - margin * 2;
+
+    // Configurar a captura de HTML para PDF
+    const options = {
+      scale: 2, // Aumentar qualidade
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#FFFFFF",
+      logging: false,
+    };
+
+    // Usar html2canvas para renderizar o elemento
+    const canvas = await html2canvas(element, options);
+
+    // Converter o canvas para imagem
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+
+    // Obter dimensões proporcionais
+    const imgWidth = pageWidth - margin * 2;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    // Quebrar em múltiplas páginas se necessário
-    let heightLeft = imgHeight;
-    let position = 0;
+    // Calcular número de páginas
+    const pageCount = Math.ceil(imgHeight / (pageHeight - margin * 2));
 
-    // Adiciona a primeira página
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+    // Adicionar páginas com recortes apropriados da imagem
+    for (let i = 0; i < pageCount; i++) {
+      if (i > 0) {
+        pdf.addPage();
+      }
 
-    // Adiciona páginas adicionais se necessário
-    while (heightLeft >= 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      // Calcular posição do recorte
+      const srcY = i * (canvas.height / pageCount);
+      const srcHeight = canvas.height / pageCount;
+
+      // Adicionar imagem para esta página
+      pdf.addImage(
+        imgData,
+        "JPEG",
+        margin,
+        margin,
+        imgWidth,
+        imgHeight / pageCount,
+        `page-${i}`,
+        "MEDIUM",
+        0,
+        -srcY * (imgWidth / canvas.width)
+      );
     }
 
     // Usar o nome personalizado se fornecido, caso contrário usar o nome gerado automaticamente
