@@ -249,3 +249,213 @@ body {
     font-size: 10pt;
   }
 }
+/* Estilos para impressão e exportação de PDF */
+@media print, .exporting-pdf {
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+    orphans: 4;
+    widows: 4;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: white !important;
+    color: black !important;
+    font-size: 10pt;
+    font-family: Arial, sans-serif;
+    line-height: 1.4;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    -ms-filter: none !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Melhorar quebras de página */
+  .print-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 10pt !important;
+    max-height: 267mm !important; /* Altura máxima confortável para A4 com margens */
+    overflow: visible;
+  }
+
+  h1,
+  h2 {
+    page-break-after: avoid;
+    break-after: avoid;
+    page-break-before: auto;
+    break-before: auto;
+    margin-top: 12pt;
+    margin-bottom: 4pt;
+  }
+
+  h1 {
+    font-size: 16pt;
+    text-align: center;
+    margin-bottom: 6pt;
+  }
+
+  h2 {
+    font-size: 13pt;
+    border-bottom: 0.5pt solid #000 !important;
+    padding-bottom: 2pt;
+    margin-top: 12pt;
+  }
+
+  p,
+  table,
+  ul,
+  ol,
+  dl {
+    orphans: 3;
+    widows: 3;
+    margin-bottom: 6pt;
+  }
+
+  .page-break {
+    page-break-before: always;
+    break-before: page;
+    height: 0;
+    display: block;
+    margin: 0;
+  }
+
+  .no-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Forçar fundo branco em todos os elementos */
+  div,
+  section,
+  main {
+    background-color: white !important;
+  }
+
+  /* Tamanhos de fonte otimizados */
+  p,
+  span,
+  div {
+    font-size: 10pt;
+    line-height: 1.3;
+  }
+
+  /* Cabeçalhos */
+  .header-title {
+    font-size: 16pt;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 4pt;
+  }
+
+  .header-subtitle {
+    font-size: 12pt;
+    text-align: center;
+    margin-bottom: 2pt;
+  }
+
+  .header-date {
+    font-size: 10pt;
+    text-align: center;
+    margin-bottom: 12pt;
+  }
+
+  /* Espaçamento otimizado para economizar espaço */
+  .print-section {
+    margin-top: 4pt !important;
+    margin-bottom: 8pt !important;
+    padding: 0 4pt !important;
+  }
+
+  /* Estilos para campos e valores */
+  .field-label,
+  .font-semibold {
+    font-weight: bold;
+  }
+
+  /* Otimização de espaço */
+  .pl-4 {
+    padding-left: 6pt !important;
+  }
+
+  .mb-2 {
+    margin-bottom: 2pt !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 4pt !important;
+  }
+
+  .mb-6 {
+    margin-bottom: 6pt !important;
+  }
+
+  .mb-8 {
+    margin-bottom: 8pt !important;
+  }
+
+  .mt-4 {
+    margin-top: 6pt !important;
+  }
+
+  /* Redução de espaçamento entre elementos */
+  h2 + div {
+    margin-top: 6pt !important;
+  }
+
+  .print-content {
+    font-size: 10pt;
+    line-height: 1.3;
+  }
+
+  /* Ajustes de fontes para economizar espaço */
+  .text-sm {
+    font-size: 9pt !important;
+  }
+
+  /* Assinatura */
+  .signature-line {
+    border-top: 1pt solid #000;
+    width: 140pt;
+    margin: 16pt auto 4pt;
+  }
+
+  .signature-name {
+    text-align: center;
+    font-size: 10pt;
+  }
+}
+
+/* Estilos específicos para a exportação de PDF - ainda mais otimizados */
+.exporting-pdf .print-section {
+  padding: 6pt 8pt !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin-bottom: 0 !important;
+}
+
+.exporting-pdf h2 {
+  font-size: 12pt;
+  margin-top: 8pt;
+  margin-bottom: 6pt;
+}
+
+.exporting-pdf p,
+.exporting-pdf span,
+.exporting-pdf div {
+  line-height: 1.2;
+}

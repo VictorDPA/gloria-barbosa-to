@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PrintView } from "@/components/print/PrintView";
 import { useAnamneseStore } from "@/lib/store";
-import { exportToPdf, generatePdfFilename } from "@/lib/utils";
+import { exportToPdf, generatePdfFilename } from "@/lib/pdfExporter"; // Importando do novo arquivo
 
 export default function PrintPage() {
   const router = useRouter();
@@ -22,7 +22,15 @@ export default function PrintPage() {
   const defaultFilename = generatePdfFilename(currentAnamnese);
 
   const handlePrint = () => {
-    window.print();
+    // Adicionar classe para melhorar qualidade de impressão
+    document.body.classList.add("print-optimized");
+
+    // Pequeno atraso para permitir que os estilos sejam aplicados
+    setTimeout(() => {
+      window.print();
+      // Remover a classe depois da impressão
+      document.body.classList.remove("print-optimized");
+    }, 100);
   };
 
   const handleExportPdf = async () => {
@@ -30,12 +38,17 @@ export default function PrintPage() {
     setExportError(null);
 
     try {
-      if (printRef.current) {
-        // Usar o nome personalizado se fornecido e válido
-        const filename = customFilename.trim()
-          ? customFilename.trim()
-          : undefined;
-        await exportToPdf("print-content", currentAnamnese, filename);
+      // Usar o nome personalizado se fornecido e válido
+      const filename = customFilename.trim()
+        ? customFilename.trim()
+        : undefined;
+
+      // Exportar usando a função otimizada
+      await exportToPdf("print-content", currentAnamnese, filename);
+
+      // Esconder o input de nome após exportação bem-sucedida
+      if (showFilenameInput) {
+        setShowFilenameInput(false);
       }
     } catch (error) {
       console.error("Erro ao exportar para PDF:", error);
@@ -137,7 +150,7 @@ export default function PrintPage() {
           </div>
         )}
 
-        <div id="print-content" ref={printRef}>
+        <div id="print-content" ref={printRef} className="print-container">
           <PrintView data={currentAnamnese} />
         </div>
 

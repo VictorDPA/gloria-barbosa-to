@@ -14,8 +14,8 @@ type PrintViewProps = {
 export const PrintView: React.FC<PrintViewProps> = ({ data }) => {
   return (
     <div className="bg-white print:shadow-none print:p-0 print-content">
-      <div className="text-center mb-6 no-break">
-        <h1 className="header-title text-2xl font-bold text-slate-900 mb-2">
+      <div className="text-center mb-4 no-break">
+        <h1 className="header-title text-2xl font-bold text-slate-900 mb-1">
           ANAMNESE
         </h1>
         {data.patientIdentification.name && (
@@ -29,36 +29,36 @@ export const PrintView: React.FC<PrintViewProps> = ({ data }) => {
       </div>
 
       {/* Parte 1 - Informações básicas */}
-      <div className="print-section part-1">
+      <div className="print-section part-1" id="section-part1">
         <PrintViewPart1 data={data} />
       </div>
 
-      {/* Quebra de página após a primeira parte */}
+      {/* Quebra de página mais eficiente */}
       <div className="page-break"></div>
 
       {/* Parte 2 - Desenvolvimento */}
-      <div className="print-section part-2">
+      <div className="print-section part-2" id="section-part2">
         <PrintViewPart2 data={data} />
       </div>
 
-      {/* Quebra de página após a segunda parte */}
+      {/* Quebra de página */}
       <div className="page-break"></div>
 
       {/* Parte 3 - Atividades diárias */}
-      <div className="print-section part-3">
+      <div className="print-section part-3" id="section-part3">
         <PrintViewPart3 data={data} />
       </div>
 
-      {/* Quebra de página após a terceira parte */}
+      {/* Quebra de página */}
       <div className="page-break"></div>
 
       {/* Parte 4 - Avaliação sensorial e plano terapêutico */}
-      <div className="print-section part-4">
+      <div className="print-section part-4" id="section-part4">
         <PrintViewPart4 data={data} />
       </div>
 
-      {/* Assinatura - Adicionar quebra de página antes se necessário */}
-      <div className="mt-12 text-center border-t border-slate-300 pt-6 no-break">
+      {/* Assinatura */}
+      <div className="mt-8 text-center pt-4 no-break">
         <div className="signature-line"></div>
         <p className="signature-name">
           {data.additionalInformation.therapist || "Terapeuta Ocupacional"}
